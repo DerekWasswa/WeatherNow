@@ -3,6 +3,6 @@ package com.example.weathernow.domain.utils
 object Constants {
 
     const val BASE_URL = "api.openweathermap.org/"
-    const val API_KEY = "e255dddd062917af0b9b3682577fd5b2"
+    const val LOCATION_PERMISSION_REQUEST_CODE = 101
 
 }

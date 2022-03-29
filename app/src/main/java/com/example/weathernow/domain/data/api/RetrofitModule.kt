@@ -1,6 +1,7 @@
 package com.example.weathernow.domain.data.api
 
 import android.content.Context
+import com.example.weathernow.BuildConfig
 import com.example.weathernow.R
 import com.example.weathernow.domain.utils.Constants
 import com.google.gson.Gson
@@ -36,7 +37,7 @@ class RetrofitModule(context: Context) : BaseRetrofitModule(context) {
         clientBuilder.build()
 
         retrofitModule = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.OPEN_WEATHER_APIKEY)
             .client(clientBuilder.build())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
