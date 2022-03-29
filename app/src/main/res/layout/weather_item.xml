@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <import type="com.example.weathernow.domain.data.models.DailyWeather" />
+
+        <variable
+            name="weatherItem"
+            type="com.example.weathernow.domain.data.models.DailyWeather" />
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_weather_date"
+            format="@{`EEE, dd MMMM yyyy`}"
+            date="@{weatherItem.dtTxt}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+
+            android:textColor="@color/purple_500"
+            android:textSize="@dimen/text_18sp"
+            android:visibility="gone"
+            tools:text="6:00AM" />
+
+        <LinearLayout
+            android:id="@+id/ll_weather_changes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_5dp"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/tv_weather_time"
+                format="@{`h:mm a`}"
+                date="@{weatherItem.dtTxt}"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.25"
+
+                android:textColor="@color/purple_500"
+                android:textSize="@dimen/text_16sp"
+                tools:text="6:00AM" />
+
+            <TextView
+                android:id="@+id/tv_weather_status"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.25"
+
+                android:textColor="@color/purple_500"
+                android:textSize="@dimen/text_16sp"
+                tools:text="Cloudy" />
+
+            <ImageView
+                android:id="@+id/iv_weather_icon"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="@dimen/dimen_30dp"
+                android:layout_weight="0.5"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

@@ -18,6 +18,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import androidx.databinding.DataBindingUtil
+import androidx.viewpager2.widget.ViewPager2
 import com.example.weathernow.databinding.ActivityHomeBinding
 
 
@@ -28,12 +29,20 @@ class HomeActivity : AppCompatActivity() {
     private val weatherNowViewModel : WeatherNowViewModel by viewModel { parametersOf(weatherNowRepositoryImplementation)  }
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         initLocation()
         observeWeather()
+        initViews()
+    }
+
+    private fun initViews() {
+        viewPager = binding.vpWeather
+        val pagerAdapter = WeatherSlidePagerAdapter(supportFragmentManager, lifecycle)
+        viewPager.adapter = pagerAdapter
     }
 
     private fun initLocation() {
@@ -109,6 +118,16 @@ class HomeActivity : AppCompatActivity() {
                 grantResults[0] == PackageManager.PERMISSION_GRANTED -> initLocationUpdates()
                 else -> { finish() }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (viewPager.currentItem == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed()
+        } else {
+            viewPager.currentItem = viewPager.currentItem - 1
         }
     }
 }

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <import type="com.example.weathernow.domain.data.models.DailyWeather" />
+
+        <variable
+            name="weather"
+            type="com.example.weathernow.domain.data.models.DailyWeather" />
+
+        <variable
+            name="weatherList"
+            type="java.util.List&lt;com.example.weathernow.domain.data.models.DailyWeather>" />
+
+
+    </data>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/content"
+        android:fillViewport="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_20dp"
+            android:layout_marginEnd="@dimen/dimen_20dp"
+            android:layout_marginBottom="@dimen/dimen_20dp">
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_weather"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="@dimen/dimen_0dp"
+                app:constraint_referenced_ids="tv_weather_tomorrow, tv_weather_date,
+                tv_weather_day, tv_weather_status, iv_weather_icon, tv_weather_changes,
+                tv_weather_temperature" />
+
+            <TextView
+                android:id="@+id/tv_weather_day"
+                format="@{`EEEE`}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/purple_500"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintEnd_toStartOf="@id/tv_weather_tomorrow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/today_label" />
+
+            <TextView
+                android:id="@+id/tv_weather_tomorrow"
+                format="@{`EEEE`}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/purple_500"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Tomorrow" />
+
+            <View
+                android:id="@+id/view_underline"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="@dimen/dimen_2dp"
+                android:background="@color/purple_500"
+                app:layout_constraintEnd_toEndOf="@id/tv_weather_tomorrow"
+                app:layout_constraintStart_toStartOf="@id/tv_weather_tomorrow"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_tomorrow" />
+
+            <TextView
+                android:id="@+id/tv_weather_date"
+                format="@{`EEE, dd MMMM yyyy`}"
+                date="@{weather.dtTxt}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:textColor="@color/grey_900"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_day"
+                tools:text="Mon, 23 June 2020" />
+
+            <TextView
+                android:id="@+id/tv_weather_temperature"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/purple_500"
+                android:textSize="30sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_date"
+                tools:text="32.4 C" />
+
+            <TextView
+                android:id="@+id/tv_weather_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:textColor="@color/grey_900"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_temperature"
+                tools:text="Partly cloudy" />
+
+            <ImageView
+                android:id="@+id/iv_weather_icon"
+                android:layout_width="@dimen/dimen_60dp"
+                android:layout_height="@dimen/dimen_60dp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_weather_status"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_weather_temperature" />
+
+            <TextView
+                android:id="@+id/tv_weather_changes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_10dp"
+                android:textStyle="bold"
+                android:text="@string/daily_weather_change"
+                android:textColor="@color/grey_900"
+                android:textSize="@dimen/text_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_status" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_weather_changes"
+                weather="@{weatherList}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_weather_changes"
+                tools:listitem="@layout/weather_item" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>
