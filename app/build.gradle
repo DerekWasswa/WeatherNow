@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -25,6 +26,9 @@ android {
         }
     }
     compileOptions {
+        // Flag to enable support for new language APIs
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -67,4 +71,12 @@ dependencies {
 
     // Location
     implementation "com.google.android.gms:play-services-location:$location"
+
+    // Kotlin Serialization Lib
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlinx_converter"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugaring"
+
+
 }
