@@ -1,26 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".views.HomeActivity">
+<layout>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/recommendedShimmer"
-        app:shimmer_auto_start="true"
-        android:orientation="vertical"
-        app:shimmer_base_color="@color/lightGrey"
-        app:shimmer_highlight_color="@color/white">
+    <data>
 
-        <include layout="@layout/loading_placebo"/>
+        <import type="android.view.View" />
+        <import type="com.example.weathernow.domain.data.models.Weather" />
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        <variable
+            name="loadingWeather"
+            type="Boolean" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <variable
+            name="errorLoadingWeather"
+            type="Boolean" />
+
+        <variable
+            name="error"
+            type="String" />
+
+        <variable
+            name="weatherData"
+            type="Weather" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{ loadingWeather ? View.VISIBLE : View.GONE }"
+            android:id="@+id/loadingShimmer"
+            app:shimmer_auto_start="true"
+            android:orientation="vertical"
+            app:shimmer_base_color="@color/lightGrey"
+            app:shimmer_highlight_color="@color/white">
+
+            <include layout="@layout/loading_placebo"/>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{ loadingWeather ? View.GONE : View.VISIBLE }"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
