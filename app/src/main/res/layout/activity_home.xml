@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <import type="android.view.View" />
-        <import type="com.example.weathernow.domain.data.models.Weather" />
 
         <variable
             name="loadingWeather"
@@ -19,15 +20,12 @@
             type="String" />
 
         <variable
-            name="weatherData"
-            type="Weather" />
+            name="weatherLocation"
+            type="String" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_marginHorizontal="@dimen/dimen_16dp"
         android:layout_marginVertical="@dimen/dimen_10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -56,35 +54,43 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="@{ loadingWeather ? View.GONE : View.VISIBLE }"
+            android:visibility="@{ (loadingWeather || errorLoadingWeather) ? View.GONE : View.VISIBLE }"
             tools:visibility="visible"
             android:layout_width="0dp"
             android:layout_height="0dp">
 
             <TextView
+                android:layout_marginHorizontal="@dimen/dimen_16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                style="?android:textAppearanceMedium"
-                android:padding="16dp"
-                android:background="@drawable/box_bg"
+                style="?android:textAppearanceLarge"
+                android:textColor="@color/purple_500"
+                android:textStyle="bold"
                 android:id="@+id/currentLocation"
                 android:lineSpacingMultiplier="1.2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lorem Ipsum" />
+                android:text="@{ weatherLocation }"
+                tools:text="Lorem Ipsum"
+                android:drawablePadding="@dimen/dimen_8dp"
+                app:drawableStartCompat="@drawable/ic_location" />
 
             <androidx.viewpager2.widget.ViewPager2
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/currentLocation"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginTop="@dimen/dimen_10dp"
                 android:id="@+id/vpWeather"
                 android:layout_width="match_parent"
                 android:layout_height="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:visibility="@{ errorLoadingWeather ? View.VISIBLE : View.GONE, default=gone }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            layout="@layout/no_weather_changes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

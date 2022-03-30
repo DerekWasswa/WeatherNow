@@ -2,4 +2,8 @@
     <string name="app_name">Weather Now</string>
     <string name="daily_weather_change">Weather Changes in the day</string>
     <string name="today_label">Today</string>
+    <string name="weather_unavailable">Weather data currently unavailable!</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
 </resources>

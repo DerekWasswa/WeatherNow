@@ -1,25 +1,29 @@
 package com.example.weathernow.views
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.weathernow.R
 import com.example.weathernow.domain.data.api.BaseRetrofitModule
 import com.example.weathernow.domain.data.repository.WeatherNowRepositoryImplementation
 import com.example.weathernow.domain.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.weathernow.domain.utils.Resource
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weathernow.databinding.ActivityHomeBinding
+import com.example.weathernow.domain.utils.Constants.FASTEST_INTERVAL
+import com.example.weathernow.domain.utils.Constants.UPDATE_INTERVAL
+import com.example.weathernow.domain.utils.Permissions
+import com.google.android.gms.location.*
+import android.os.Looper
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationCallback
+
+
 
 
 class HomeActivity : AppCompatActivity() {
@@ -30,13 +34,14 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var binding: ActivityHomeBinding
     private lateinit var viewPager: ViewPager2
+    private lateinit var mLocationRequest: LocationRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-        initLocation()
+
+        binding.loadingWeather = true
         observeWeather()
-        initViews()
     }
 
     private fun initViews() {
@@ -45,23 +50,26 @@ class HomeActivity : AppCompatActivity() {
         viewPager.adapter = pagerAdapter
     }
 
-    private fun initLocation() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        checkLocationPermission()
-    }
-
     private fun observeWeather() {
         weatherNowViewModel.locationWeather.observe(this) { (status, data, error) ->
             when (status) {
-                Resource.Status.LOADING -> binding.loadingWeather = true
+                Resource.Status.LOADING -> {
+                    binding.errorLoadingWeather = false
+                    binding.loadingWeather = true
+                }
                 Resource.Status.SUCCESS -> {
                     data?.let { mData ->
-                        binding.weatherData = mData
+                        binding.weatherLocation = mData.city.name
                         binding.loadingWeather = false
+                        binding.errorLoadingWeather = false
+                        initViews()
+                        pauseLocationUpdates()
                     }
                 }
                 Resource.Status.ERROR -> {
                     binding.loadingWeather = false
+                    binding.errorLoadingWeather = true
+                    pauseLocationUpdates()
                     error?.let { mError ->
                         binding.error = mError
                     }
@@ -70,39 +78,32 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLocationPermission() {
-        if (areLocationPermissionsGranted()) {
-            initLocationUpdates()
-        } else {
-            requestPermission()
+    private fun pauseLocationUpdates() {
+        if (::fusedLocationProviderClient.isInitialized) {
+            fusedLocationProviderClient.removeLocationUpdates(locationUpdatesCallback)
         }
     }
 
-    private fun areLocationPermissionsGranted(): Boolean {
-        val coarseLocationPermission = PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        val fineLocationPermission = PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        return fineLocationPermission && coarseLocationPermission
-    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this@HomeActivity,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ),
-            LOCATION_PERMISSION_REQUEST_CODE)
+    private val locationUpdatesCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val lastLocation = locationResult.lastLocation
+            // Invoke Weather Data Fetch
+            weatherNowViewModel.observeLocationWeather(lastLocation.latitude, lastLocation.longitude)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun initLocationUpdates() {
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.let {
-                    // Invoke Weather Data Fetch
-                    weatherNowViewModel.observeLocationWeather(it.latitude, it.longitude)
-                }
-            }
+        mLocationRequest = LocationRequest.create()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = UPDATE_INTERVAL
+        mLocationRequest.fastestInterval = FASTEST_INTERVAL
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        Looper.myLooper()?.let { mLopper ->
+            fusedLocationProviderClient.requestLocationUpdates(mLocationRequest, locationUpdatesCallback, mLopper)
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -115,7 +116,17 @@ class HomeActivity : AppCompatActivity() {
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE -> when {
                 grantResults.isEmpty() -> { finish() }
-                grantResults[0] == PackageManager.PERMISSION_GRANTED -> initLocationUpdates()
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+
+                    when {
+                        Permissions.isLocationEnabled(this@HomeActivity) -> {
+                            initLocationUpdates()
+                        }
+                        else -> {
+                            Permissions.showGPSNotEnabledDialog(this@HomeActivity)
+                        }
+                    }
+                }
                 else -> { finish() }
             }
         }
@@ -128,6 +139,25 @@ class HomeActivity : AppCompatActivity() {
             super.onBackPressed()
         } else {
             viewPager.currentItem = viewPager.currentItem - 1
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        when {
+            Permissions.areLocationPermissionsGranted(this@HomeActivity) -> {
+                when {
+                    Permissions.isLocationEnabled(this@HomeActivity) -> {
+                        initLocationUpdates()
+                    }
+                    else -> {
+                        Permissions.showGPSNotEnabledDialog(this@HomeActivity)
+                    }
+                }
+            }
+            else -> {
+                Permissions.requestPermission(this@HomeActivity, LOCATION_PERMISSION_REQUEST_CODE)
+            }
         }
     }
 }

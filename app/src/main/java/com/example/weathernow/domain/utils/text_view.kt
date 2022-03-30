@@ -13,4 +13,31 @@ object TextViewBindings{
             ?: default?:""
     }
 
+    @BindingAdapter(value = ["dtx"], requireAll = false)
+    @JvmStatic
+    fun TextView.setDtx(date: String) {
+        text = date.getDateTimeFromString()
+    }
+
+    @BindingAdapter(value = ["wind"], requireAll = false)
+    @JvmStatic
+    fun TextView.setWind(wind: Double) {
+        val value = "$wind km/h"
+        text = value
+    }
+
+    @BindingAdapter(value = ["humidity"], requireAll = false)
+    @JvmStatic
+    fun TextView.setHumidity(humidity: Long) {
+        val value = "$humidity %"
+        text = value
+    }
+
+    @BindingAdapter(value = ["pressure"], requireAll = false)
+    @JvmStatic
+    fun TextView.setPressure(pressure: Long) {
+        val value = "${pressure}mb"
+        text = value
+    }
+
 }

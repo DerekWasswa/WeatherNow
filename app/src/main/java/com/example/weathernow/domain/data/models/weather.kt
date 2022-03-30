@@ -1,34 +1,26 @@
-// To parse the JSON, install kotlin's serialization plugin and do:
-//
-// val json    = Json(JsonConfiguration.Stable)
-// val weather = json.parse(Weather.serializer(), jsonString)
-
 package com.example.weathernow.domain.data.models
 
-import com.example.weathernow.domain.utils.getZonedDateTime
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import java.sql.Timestamp
-import java.time.LocalDateTime.now
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class Weather (
+    @SerializedName("cod")
+    @Expose
     val cod: String,
+    @SerializedName("message")
+    @Expose
     val message: Long,
+    @SerializedName("cnt")
+    @Expose
     val cnt: Long,
+    @SerializedName("list")
+    @Expose
     val list: List<DailyWeather>,
+    @SerializedName("city")
+    @Expose
     val city: City
 )
 
-@Serializable
 data class City (
     val id: Long,
     val name: String,
@@ -40,13 +32,11 @@ data class City (
     val sunset: Long
 )
 
-@Serializable
 data class Coord (
     val lat: Double,
     val lon: Double
 )
 
-@Serializable
 data class DailyWeather (
     val dt: Long,
     val main: MainClass,
@@ -58,74 +48,54 @@ data class DailyWeather (
     val rain: Rain? = null,
     val sys: Sys,
 
-    @SerialName("dt_txt")
+    @SerializedName("dt_txt")
     val dtTxt: String
 )
 
-@Serializable
 data class Clouds (
     val all: Long
 )
 
-@Serializable
 data class MainClass (
     val temp: Double,
 
-    @SerialName("feels_like")
+    @SerializedName("feels_like")
     val feelsLike: Double,
 
-    @SerialName("temp_min")
+    @SerializedName("temp_min")
     val tempMin: Double,
 
-    @SerialName("temp_max")
+    @SerializedName("temp_max")
     val tempMax: Double,
 
     val pressure: Long,
 
-    @SerialName("sea_level")
+    @SerializedName("sea_level")
     val seaLevel: Long,
 
-    @SerialName("grnd_level")
+    @SerializedName("grnd_level")
     val grndLevel: Long,
 
     val humidity: Long,
 
-    @SerialName("temp_kf")
+    @SerializedName("temp_kf")
     val tempKf: Double
 )
 
-@Serializable
 data class Rain (
-    @SerialName("3h")
+    @SerializedName("3h")
     val the3H: Double
 )
 
-@Serializable
 data class Sys (
     val pod: Pod
 )
 
-@Serializable
 enum class Pod(val value: String) {
     D("d"),
     N("n");
-
-    companion object : KSerializer<Pod> {
-        override val descriptor: SerialDescriptor get() {
-            return PrimitiveSerialDescriptor("com.example.weathernow.domain.data.models.Pod", PrimitiveKind.STRING)
-        }
-        override fun deserialize(decoder: Decoder): Pod = when (val value = decoder.decodeString()) {
-            "d"  -> D
-            "n"  -> N
-            else -> throw IllegalArgumentException("Pod could not parse: $value")
-        }
-        override fun serialize(encoder: Encoder, value: Pod) {
-            return encoder.encodeString(value.value)
-        }
-    }
 }
 
-@Serializable
 data class WeatherElement (
     val id: Long,
     val main: MainEnum,
@@ -133,7 +103,6 @@ data class WeatherElement (
     val icon: String
 )
 
-@Serializable
 enum class Description(val value: String) {
     BrokenClouds("broken clouds"),
     FewClouds("few clouds"),
@@ -141,47 +110,17 @@ enum class Description(val value: String) {
     ModerateRain("moderate rain"),
     OvercastClouds("overcast clouds"),
     ScatteredClouds("scattered clouds");
-
-    companion object : KSerializer<Description> {
-        override val descriptor: SerialDescriptor get() {
-            return PrimitiveSerialDescriptor("com.example.weathernow.domain.data.models.Description", PrimitiveKind.STRING)
-        }
-        override fun deserialize(decoder: Decoder): Description = when (val value = decoder.decodeString()) {
-            "broken clouds"    -> BrokenClouds
-            "few clouds"       -> FewClouds
-            "light rain"       -> LightRain
-            "moderate rain"    -> ModerateRain
-            "overcast clouds"  -> OvercastClouds
-            "scattered clouds" -> ScatteredClouds
-            else               -> throw IllegalArgumentException("Description could not parse: $value")
-        }
-        override fun serialize(encoder: Encoder, value: Description) {
-            return encoder.encodeString(value.value)
-        }
-    }
 }
 
-@Serializable
 enum class MainEnum(val value: String) {
     Clouds("Clouds"),
     Rain("Rain");
-
-    companion object : KSerializer<MainEnum> {
-        override val descriptor: SerialDescriptor get() {
-            return PrimitiveSerialDescriptor("com.example.weathernow.domain.data.models.MainEnum", PrimitiveKind.STRING)
-        }
-        override fun deserialize(decoder: Decoder): MainEnum = when (val value = decoder.decodeString()) {
-            "Clouds" -> Clouds
-            "Rain"   -> Rain
-            else     -> throw IllegalArgumentException("MainEnum could not parse: $value")
-        }
-        override fun serialize(encoder: Encoder, value: MainEnum) {
-            return encoder.encodeString(value.value)
-        }
-    }
 }
 
-@Serializable
+enum class ViewType {
+    NORMAL, EMPTY
+}
+
 data class Wind (
     val speed: Double,
     val deg: Long,
@@ -193,31 +132,8 @@ fun WeatherElement.getIcon(): WeatherIcon {
         ?: WeatherIcon.CLEAR_SKY
 }
 
-fun List<DailyWeather>.getWeatherToday(): DailyWeather {
-    var weather: DailyWeather = last()
-    val timeNow = now()
-    for (i in 0 until size) {
-        val weatherTime = this[i].dtTxt.getZonedDateTime().toLocalDateTime()
-
-        if (timeNow.isAfter(weatherTime)) {
-            weather = this[i]
-        }
-    }
-
-    return weather
-}
-
-fun List<DailyWeather>.getWeatherTomorrow(): DailyWeather {
-    var weather: DailyWeather = last()
-    val timeNow = now().plusDays(1)
-
-    for (i in 0 until size) {
-        val weatherTime = this[i].dtTxt.getZonedDateTime().toLocalDateTime()
-
-        if (timeNow.isAfter(weatherTime)) {
-            weather = this[i]
-        }
-    }
-
-    return weather
+fun List<DailyWeather>.sortWeatherItems(): MutableList<DailyWeather> {
+    val weatherList: MutableList<DailyWeather> = this.toMutableList()
+    weatherList.sortByDescending { it.dtTxt }
+    return weatherList
 }
