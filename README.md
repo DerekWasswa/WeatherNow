@@ -19,7 +19,6 @@ A simple app which displays the weather for the users' location.
 
 5. Run the application on a connected device or emulator.
 
-
 ### Prerequisites
 
 1. [Set up Android Studio (developed with 4.0)](https://developer.android.com/studio/install)
@@ -29,6 +28,11 @@ A simple app which displays the weather for the users' location.
 3. [Run application on emulator](https://developer.android.com/studio/run/emulator)
 
 4. [Run application on android device](https://developer.android.com/studio/run/device)
+
+
+## Demo/UIs
+![Thursday Weather](https://i.postimg.cc/rp3w2Jhz/Screenshot-20220331-015016-Weather-Now.jpg "Mannheim Thursday")
+![Friday Weather](https://i.postimg.cc/sxRfv2Cr/Screenshot-20220331-015026-Weather-Now.jpg "Mannheim Friday")
 
 
 ## Running the tests (Unit tests)
