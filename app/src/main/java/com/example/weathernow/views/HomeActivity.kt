@@ -21,6 +21,8 @@ import com.example.weathernow.domain.utils.Permissions
 import com.google.android.gms.location.*
 import android.os.Looper
 import com.example.weathernow.BuildConfig
+import com.example.weathernow.viewmodels.WeatherNowViewModel
+import com.example.weathernow.views.adapters.WeatherSlidePagerAdapter
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationCallback
 

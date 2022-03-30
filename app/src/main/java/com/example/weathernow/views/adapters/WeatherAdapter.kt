@@ -1,4 +1,4 @@
-package com.example.weathernow.views
+package com.example.weathernow.views.adapters
 
 import android.content.Context
 import android.util.Log

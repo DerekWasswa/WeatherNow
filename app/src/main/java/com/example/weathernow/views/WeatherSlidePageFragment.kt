@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weathernow.R
 import com.example.weathernow.databinding.WeatherPageBinding
@@ -16,6 +15,8 @@ import com.example.weathernow.domain.data.models.sortWeatherItems
 import com.example.weathernow.domain.utils.Resource
 import com.example.weathernow.domain.utils.getZonedDateTime
 import com.example.weathernow.domain.utils.visible
+import com.example.weathernow.viewmodels.WeatherNowViewModel
+import com.example.weathernow.views.adapters.WeatherAdapter
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.time.ZonedDateTime
 import java.time.format.TextStyle

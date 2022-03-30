@@ -3,7 +3,7 @@ package com.example.weathernow.domain.utils
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weathernow.domain.data.models.DailyWeather
-import com.example.weathernow.views.WeatherAdapter
+import com.example.weathernow.views.adapters.WeatherAdapter
 
 object RecyclerViewBindings {
 

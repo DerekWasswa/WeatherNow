@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.example.weathernow.domain.data.models.Weather
 import com.example.weathernow.domain.data.repository.WeatherNowRepositoryImplementation
 import com.example.weathernow.domain.utils.Resource
+import com.example.weathernow.viewmodels.WeatherNowViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
