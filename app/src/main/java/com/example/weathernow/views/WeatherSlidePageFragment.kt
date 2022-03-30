@@ -116,14 +116,17 @@ class WeatherSlidePageFragment: Fragment() {
 
             binding.weather = currentDailyWeather
 
-            val weatherDescription: String = currentDailyWeather.weather[0].main.value
-            setIcon(weatherDescription)
+            currentDailyWeather.weather[0].main?.value?.let { mValue ->
+                val weatherDescription: String = mValue
+                setIcon(weatherDescription)
+
+                binding.tvWeatherStatus.text = weatherDescription
+            }
 
             var temp: Double = currentDailyWeather.main.temp - 273.15
             temp = (temp * 10).roundToInt() / 10.0
 
             binding.tvWeatherTemperature.text = String.format("%s \u00B0C %s", temp, "")
-            binding.tvWeatherStatus.text = weatherDescription
 
             binding.dailyWeatherList = filteredDailyWeather
             binding.groupWeather.visible()

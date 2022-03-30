@@ -72,8 +72,10 @@ class WeatherAdapter(context: Context) :
             mBinding.tvWeatherStatus.text = String.format("%s \u00B0C %s", temp, "")
 
             // appropriate icon
-            val weatherStatus: String = model.weather[0].main.value
-            setIcon(mBinding, weatherStatus)
+            model.weather[0].main?.value?.let { weatherElement ->
+                val weatherStatus: String = weatherElement
+                setIcon(mBinding, weatherStatus)
+            }
 
             mBinding.executePendingBindings()
             if (position % 2 == 1) {

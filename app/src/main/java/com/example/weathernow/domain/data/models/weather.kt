@@ -98,7 +98,7 @@ enum class Pod(val value: String) {
 
 data class WeatherElement (
     val id: Long,
-    val main: MainEnum,
+    val main: MainEnum? = null,
     val description: Description,
     val icon: String
 )
