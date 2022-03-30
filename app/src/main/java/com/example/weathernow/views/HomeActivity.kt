@@ -20,10 +20,9 @@ import com.example.weathernow.domain.utils.Constants.UPDATE_INTERVAL
 import com.example.weathernow.domain.utils.Permissions
 import com.google.android.gms.location.*
 import android.os.Looper
+import com.example.weathernow.BuildConfig
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationCallback
-
-
 
 
 class HomeActivity : AppCompatActivity() {
@@ -59,11 +58,11 @@ class HomeActivity : AppCompatActivity() {
                 }
                 Resource.Status.SUCCESS -> {
                     data?.let { mData ->
+                        pauseLocationUpdates()
                         binding.weatherLocation = mData.city.name
                         binding.loadingWeather = false
                         binding.errorLoadingWeather = false
                         initViews()
-                        pauseLocationUpdates()
                     }
                 }
                 Resource.Status.ERROR -> {
@@ -88,7 +87,7 @@ class HomeActivity : AppCompatActivity() {
         override fun onLocationResult(locationResult: LocationResult) {
             val lastLocation = locationResult.lastLocation
             // Invoke Weather Data Fetch
-            weatherNowViewModel.observeLocationWeather(lastLocation.latitude, lastLocation.longitude)
+            weatherNowViewModel.observeLocationWeather(lastLocation.latitude, lastLocation.longitude, BuildConfig.OPEN_WEATHER_APIKEY)
         }
     }
 
