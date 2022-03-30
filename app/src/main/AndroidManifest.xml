@@ -15,15 +15,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherNow">
+
         <activity
-            android:name=".views.HomeActivity"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/SplashTheme"
+            android:name=".views.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:exported="false"
+            android:name=".views.HomeActivity" />
+
     </application>
 
 </manifest>
