@@ -5,6 +5,6 @@ import com.example.weathernow.domain.data.models.Weather
 
 class WeatherNowRepositoryImplementation(private val apiService: ApiService): WeatherNowRepository {
 
-    override suspend fun fetchWeather(): Weather = apiService.getWeather()
+    override suspend fun fetchWeather(options: Map<String, String>): Weather = apiService.getWeather(options)
 
 }
